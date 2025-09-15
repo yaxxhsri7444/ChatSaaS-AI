@@ -1,0 +1,2 @@
+/* small custom styles; Tailwind handles most */
+:host { display: block; }

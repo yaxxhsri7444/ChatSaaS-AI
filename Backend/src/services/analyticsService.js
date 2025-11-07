@@ -1,6 +1,6 @@
 const Chat = require('../models/Chat');
 
-export async function getAnalytics(businessId) {
+async function getAnalytic(businessId) {
   const totalChats = await Chat.countDocuments({ businessId });
   const chatsPerDay = await Chat.aggregate([
     { $match: { businessId } },
@@ -10,3 +10,5 @@ export async function getAnalytics(businessId) {
 
   return { totalChats, chatsPerDay };
 }
+
+module.exports = { getAnalytic };

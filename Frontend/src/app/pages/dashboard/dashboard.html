@@ -1,56 +1,89 @@
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
   <!-- Page Heading -->
-  <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Dashboard</h1>
+  <h1
+    class="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-8 tracking-tight"
+  >
+    Dashboard
+  </h1>
 
   <!-- Loading Spinner -->
-  <div *ngIf="loading" class="flex justify-center py-10">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+  <div *ngIf="loading" class="flex justify-center py-16">
+    <div
+      class="animate-spin rounded-full h-14 w-14 border-4 border-indigo-500 border-t-transparent"
+    ></div>
   </div>
 
   <!-- Analytics Cards -->
-  <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div
+    *ngIf="!loading"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+  >
     <!-- Total Chats -->
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+    >
       <h2 class="text-gray-600 dark:text-gray-400 text-sm">Total Chats</h2>
-      <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.totalChats }}</p>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        {{ stats.totalChats }}
+      </p>
     </div>
 
     <!-- Unique Users -->
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+    >
       <h2 class="text-gray-600 dark:text-gray-400 text-sm">Unique Users</h2>
-      <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.uniqueUsers }}</p>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+        {{ stats.uniqueUsers }}
+      </p>
     </div>
 
     <!-- Top Question -->
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+    >
       <h2 class="text-gray-600 dark:text-gray-400 text-sm">Top Question</h2>
-      <p class="text-lg font-medium text-gray-900 dark:text-white">
+      <p class="text-lg font-medium text-gray-900 dark:text-white mt-2 truncate">
         {{ stats.topQuestion || 'N/A' }}
       </p>
     </div>
 
     <!-- Avg Rating -->
-    <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+    >
       <h2 class="text-gray-600 dark:text-gray-400 text-sm">Avg. Rating</h2>
-      <p class="text-2xl font-bold text-yellow-500">{{ stats.avgRating }}/5</p>
+      <p class="text-3xl font-bold text-yellow-500 mt-2">
+        {{ stats.avgRating }}/5 ⭐
+      </p>
     </div>
   </div>
 
   <!-- Quick Actions -->
-  <div class="mt-10">
-    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Quick Actions</h2>
+  <div class="mt-12">
+    <h2
+      class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
+    >
+      ⚡ Quick Actions
+    </h2>
     <div class="flex flex-wrap gap-4">
-      <a routerLink="/documents/upload"
-        class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition">
-        Upload Documents
+      <a
+        routerLink="/upload"
+        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+      >
+        📂 Upload Documents
       </a>
-      <a routerLink="/chatboard"
-        class="px-5 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition">
-        Open Chatboard
+      <a
+        routerLink="/chatboard"
+        class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+      >
+        💬 Open Chatboard
       </a>
-      <a routerLink="/chatbot/config"
-        class="px-5 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition">
-        Configure Chatbot
+      <a
+        routerLink="/widget"
+        class="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+      >
+        ⚙️ widget
       </a>
     </div>
   </div>

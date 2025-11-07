@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  
+
   darkMode = false;
 
   constructor(private auth: AuthService) {}

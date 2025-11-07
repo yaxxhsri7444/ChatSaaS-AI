@@ -2,23 +2,22 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { ApiService } from '../../../service/api';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Message } from 'postcss';
-
-
-interface ChatMessage {
-  role: 'user' | 'bot';
+export interface Message {
   text: string;
-  time: string;
+  sender: 'user' | 'bot';
+  time: Date;
 }
 
 @Component({
   selector: 'app-chat-board',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './chat-board.html',
-  styleUrl: './chat-board.css'
+  styleUrl: './chat-board.css',
 })
 export class ChatBoard {
-  messages: Message[] = [];
+endChat() {
+throw new Error('Method not implemented.');
+}messages: Message[] = [];
   userInput: string = '';
   loading: boolean = false;
 
@@ -31,7 +30,6 @@ export class ChatBoard {
       sender: 'user',
       text: this.userInput,
       time: new Date(),
-      type: ''
     };
     this.messages.push(userMsg);
 
@@ -43,23 +41,21 @@ export class ChatBoard {
           sender: 'bot',
           text: res.answer || 'No response from bot.',
           time: new Date(),
-          type: ''
         };
         this.messages.push(botMsg);
         this.loading = false;
       },
       error: () => {
         this.messages.push({
-          sender: 'bot',
-          text: '⚠️ Error: Unable to get response',
+          text: this.userInput,
+          sender: 'user',
           time: new Date(),
-          type: ''
         });
+
         this.loading = false;
-      }
+      },
     });
 
     this.userInput = '';
   }
 }
-

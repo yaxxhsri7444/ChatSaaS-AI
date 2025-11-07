@@ -1,0 +1,3 @@
+.active-menu {
+  @apply bg-gradient-to-r from-indigo-500 to-pink-500 text-white shadow-md;
+}

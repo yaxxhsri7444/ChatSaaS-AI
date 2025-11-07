@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from "./pages/sidebar/sidebar";
 import { Navbar } from "./pages/navbar/navbar";
+import { AuthService } from './service/auth';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +19,25 @@ import { Navbar } from "./pages/navbar/navbar";
   `
 })
 export class App {
+  sidebarOpen = true;
   darkmode= false;
+  constructor(private auth: AuthService){}
+
+  menu = [
+    { label: 'Dashboard', route: '/dashboard', icon: '📊' },
+    { label: 'Documents', route: '/upload', icon: '📂' },
+    { label: 'ChatBot', route: '/chat', icon: '💬' },
+  ];
+
+  toggleSidebar(){
+    this.sidebarOpen = !this.sidebarOpen
+  }
 
   toggleTheme(){
     this.darkmode = !this.darkmode;
+  }
+
+  logout(){
+    this.auth.logout();
   }
 }

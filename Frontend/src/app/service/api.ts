@@ -7,20 +7,24 @@ export class ApiService {
   base = environment.apiBase;
   constructor(private http: HttpClient) {}
 
-  // auth
-  register(data: any) { return this.http.post(`${this.base}/auth/register`, data); }
-  login(data: any)    { return this.http.post(`${this.base}/auth/login`, data); }
+  register(data: any) {
+    return this.http.post(`${this.base}/auth/register`, data);
+  }
+  login(data: any) {
+    return this.http.post(`${this.base}/auth/login`, data);
+    console.log(data);
+  }
 
-  // docs
+
   uploadDoc(formData: FormData) {
     return this.http.post(`${this.base}/docs/upload`, formData);
   }
 
-  // chat
   chatQuery(payload: any) {
     return this.http.post(`${this.base}/chat/query`, payload);
   }
 
-  // analytics
-  analytics() { return this.http.get(`${this.base}/analytics`); }
+  analytics(businessId: string) {
+    return this.http.get(`${this.base}/analytics/${businessId}`);
+  }
 }

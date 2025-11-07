@@ -12,16 +12,10 @@ export const routes: Routes = [
 
   { path: 'login', component: Login },
   { path: 'register', component: Register },
-  { path: 'dashboard', component: Dashboard,
-    //  canActivate: [AuthGuard] 
-    },
-  { path: 'chat', component: ChatBoard,
-    //  canActivate: [AuthGuard]
-     },
-  { path: 'upload', component: Upload, 
-    // canActivate: [AuthGuard] 
-  },
+  { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
+  { path: 'chat', component: ChatBoard, canActivate: [AuthGuard] },
+  { path: 'upload', component: Upload, canActivate: [AuthGuard] },
   { path: 'widget', component: Widget },
 
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/login' },
 ];

@@ -1,35 +1,78 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-  <div class="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8">
-    <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200">Login</h2>
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black dark:from-black dark:via-gray-950 dark:to-slate-900 px-4">
+  <div
+    class="w-full max-w-md bg-white/10 dark:bg-slate-900/70 backdrop-blur-xl shadow-2xl rounded-2xl p-8 border border-white/10 animate-[fadeIn_0.6s_ease]"
+  >
+    <!-- Logo / Title -->
+    <div class="flex flex-col items-center">
+      <div
+        class="w-14 h-14 mb-3 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg animate-[bounceIn_1s_ease]"
+      >
+        AI
+      </div>
+      <h2
+        class="text-3xl font-extrabold text-center bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent"
+      >
+        Welcome Back
+      </h2>
+      <p class="text-sm text-gray-400 mt-1">Login to continue to ChatSaas-AI</p>
+    </div>
 
-    <form (ngSubmit)="login()" class="mt-6 space-y-4">
+    <!-- Form -->
+    <form (ngSubmit)="login()" class="mt-8 space-y-5">
       <!-- Email -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-        <input [(ngModel)]="email" name="email" type="email"
-          class="mt-1 w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+        <input
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-600 bg-gray-800/60 text-gray-100 placeholder-gray-400
+          focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
+        />
       </div>
 
       <!-- Password -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-        <input [(ngModel)]="password" name="password" type="password"
-          class="mt-1 w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <label class="block text-sm font-medium text-gray-300 mb-1">Password</label>
+        <input
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          placeholder="••••••••"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-600 bg-gray-800/60 text-gray-100 placeholder-gray-400
+          focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition"
+        />
       </div>
 
       <!-- Error -->
-      <div *ngIf="error" class="text-red-500 text-sm">{{ error }}</div>
+      <div
+        *ngIf="error"
+        class="text-red-400 text-sm font-medium animate-[fadeIn_0.4s_ease]"
+      >
+        {{ error }}
+      </div>
 
       <!-- Button -->
-      <button type="submit" [disabled]="loading"
-        class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold rounded-lg shadow-md transition">
+      <button
+        type="submit"
+        [disabled]="loading"
+        class="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-indigo-500 
+        disabled:opacity-50 text-white font-semibold rounded-lg shadow-lg transform active:scale-95 transition-all duration-200"
+      >
         {{ loading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
 
-    <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+    <!-- Footer -->
+    <p class="mt-8 text-center text-sm text-gray-400">
       Don’t have an account?
-      <a routerLink="/auth/register" class="text-blue-600 hover:underline">Register</a>
+      <a
+        routerLink="/register"
+        class="font-medium text-indigo-400 hover:text-pink-400 transition hover:underline cursor-pointer"
+      >
+        Register
+      </a>
     </p>
   </div>
 </div>

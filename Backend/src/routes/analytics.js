@@ -1,8 +1,7 @@
 const express = require("express");
-const analytics = require("../controller/analyticsController.js"); 
-const authMiddleware = require( "../middleware/authMiddleware.js");
-
 const router = express.Router();
-router.get("/", authMiddleware, analytics);
+const { analytics } = require("../controller/analyticsController"); // ✅ yahi sahi hai
 
-export default router;
+router.get("/:businessId", analytics);
+
+module.exports = router;

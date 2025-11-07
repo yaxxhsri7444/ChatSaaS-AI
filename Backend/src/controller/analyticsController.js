@@ -1,10 +1,14 @@
-const getAnalytics = require('../services/analyticsService');
+const { getAnalytic } = require('../services/analyticsService');
 
-export async function analytics(req, res) {
+const analytics = async (req, res) => {
   try {
-    const data = await getAnalytics(req.user.id);
+    const businessId = req.params.businessId; // ya req.query.businessId (frontend ke hisaab se)
+    const data = await getAnalytic(businessId);
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch analytics" });
   }
-}
+};
+
+module.exports = { analytics };

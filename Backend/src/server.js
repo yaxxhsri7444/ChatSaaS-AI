@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const docsRoutes = require("./routes/docs");
 const chatRoutes = require("./routes/chat");
 const analyticsRoutes = require("./routes/analytics");
+const debugRoutes = require("./routes/debug");
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/docs', docsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/debug', debugRoutes);
 
 
 const port = process.env.Port || 4000;

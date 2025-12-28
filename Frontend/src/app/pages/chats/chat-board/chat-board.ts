@@ -35,20 +35,22 @@ throw new Error('Method not implemented.');
 
     this.loading = true;
 
-    this.api.chatQuery({ query: this.userInput }).subscribe({
+    // backend expects { text, sessionId } and returns { reply, sourceDocs, intent }
+    this.api.chatQuery({ text: this.userInput }).subscribe({
       next: (res: any) => {
         const botMsg: Message = {
           sender: 'bot',
-          text: res.answer || 'No response from bot.',
+          text: res.reply || 'No response from bot.',
           time: new Date(),
         };
         this.messages.push(botMsg);
         this.loading = false;
       },
       error: () => {
+        // show an error bot message instead of duplicating user's message
         this.messages.push({
-          text: this.userInput,
-          sender: 'user',
+          text: 'Failed to send message. Please try again.',
+          sender: 'bot',
           time: new Date(),
         });
 

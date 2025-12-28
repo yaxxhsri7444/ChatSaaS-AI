@@ -5,7 +5,7 @@
   >
     <div class="flex items-center gap-3">
       <div
-        class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold"
+        class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg"
       >
         🤖
       </div>
@@ -13,73 +13,118 @@
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
           Chatbot Assistant
         </h2>
-        <p class="text-xs text-green-500">● Online</p>
+        <p class="text-xs text-green-500 flex items-center gap-1">
+          <span class="animate-pulse">●</span> Online
+        </p>
       </div>
     </div>
     <button
-      class="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+      class="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow hover:shadow-lg"
       (click)="endChat()"
     >
       End Chat
     </button>
   </header>
 
-  <!-- Messages -->
+  <!-- Messages Container -->
   <div
-    class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900"
+    #chatMessages
+    class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900 scroll-smooth"
     id="chat-messages"
   >
+    <!-- Welcome Message (shown when no messages) -->
+    <div *ngIf="messages.length === 0" class="text-center py-10">
+      <div class="text-5xl mb-4">👋</div>
+      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        Welcome to Chatbot Assistant
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400">
+        Ask me anything about your business documents!
+      </p>
+    </div>
+
+    <!-- Messages -->
     <div
-      *ngFor="let msg of messages"
-      [ngClass]="msg['sender'] === 'user' ? 'text-right' : 'text-left'"
+      *ngFor="let msg of messages; let i = index"
+      [ngClass]="msg.sender === 'user' ? 'text-right' : 'text-left'"
       class="animate-fadeIn"
     >
       <div
         class="inline-block px-4 py-3 rounded-2xl shadow-sm max-w-[75%] transition-all"
-        [ngClass]="
-          msg['sender'] === 'user'
-            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none'
-            : 'bg-gray-300 dark:bg-gray-700 dark:text-gray-100 rounded-bl-none'
-        "
+        [ngClass]="{
+          'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none': msg.sender === 'user',
+          'bg-gray-300 dark:bg-gray-700 dark:text-gray-100 rounded-bl-none': msg.sender === 'bot' && !msg.error,
+          'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700 rounded-bl-none': msg.error
+        }"
       >
-        <p>{{ msg['text'] }}</p>
-        <span
-          class="text-xs opacity-70 block mt-1"
-          >{{ msg['time'] | date: 'shortTime' }}</span
+        <!-- Message Text -->
+        <p class="whitespace-pre-wrap">{{ msg.text }}</p>
+        
+        <!-- Source Documents (if available) -->
+        <div *ngIf="msg.sourceDocs && msg.sourceDocs.length > 0" class="mt-2 pt-2 border-t border-opacity-30">
+          <p class="text-xs font-semibold mb-1 opacity-70">Sources:</p>
+          <div class="space-y-1">
+            <a
+              *ngFor="let doc of msg.sourceDocs.slice(0, 3)"
+              [href]="doc.url"
+              target="_blank"
+              class="block text-xs opacity-80 hover:opacity-100 underline"
+            >
+              📄 {{ doc.title }}
+            </a>
+          </div>
+        </div>
+
+        <!-- Timestamp -->
+        <span class="text-xs opacity-70 block mt-1">
+          {{ msg.time | date: 'shortTime' }}
+        </span>
+      </div>
+
+      <!-- Retry button for error messages -->
+      <div *ngIf="msg.error" class="mt-2">
+        <button
+          (click)="retryLastMessage()"
+          class="text-xs text-blue-600 dark:text-blue-400 hover:underline"
         >
+          🔄 Retry
+        </button>
       </div>
     </div>
 
     <!-- Loading Indicator -->
-    <div *ngIf="loading" class="flex items-center space-x-2">
-      <div
-        class="animate-bounce w-2 h-2 bg-blue-600 rounded-full"
-      ></div>
-      <div
-        class="animate-bounce w-2 h-2 bg-blue-600 rounded-full delay-150"
-      ></div>
-      <div
-        class="animate-bounce w-2 h-2 bg-blue-600 rounded-full delay-300"
-      ></div>
+    <div *ngIf="loading" class="flex items-center space-x-2 animate-fadeIn">
+      <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
+        🤖
+      </div>
+      <div class="flex space-x-1">
+        <div class="animate-bounce w-2 h-2 bg-blue-600 rounded-full"></div>
+        <div class="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style="animation-delay: 0.1s"></div>
+        <div class="animate-bounce w-2 h-2 bg-blue-600 rounded-full" style="animation-delay: 0.2s"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Input -->
+  <!-- Input Area -->
   <div
-    class="p-4 bg-white dark:bg-gray-800 flex items-center gap-2 border-t dark:border-gray-700"
+    class="p-4 bg-white dark:bg-gray-800 flex items-center gap-2 border-t dark:border-gray-700 shadow-lg"
   >
     <input
       type="text"
       [(ngModel)]="userInput"
       (keyup.enter)="sendMessage()"
+      [disabled]="loading"
       placeholder="Type your message..."
-      class="flex-1 px-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="flex-1 px-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
     />
     <button
       (click)="sendMessage()"
-      class="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 text-white font-medium rounded-lg shadow-md hover:shadow-xl transition-all"
+      [disabled]="!userInput.trim() || loading"
+      class="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 text-white font-medium rounded-lg shadow-md hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+      [title]="loading ? 'Processing...' : 'Send message'"
     >
-      ➤
+      <span *ngIf="!loading">➤</span>
+      <span *ngIf="loading" class="animate-spin inline-block">⟳</span>
     </button>
   </div>
 </div>

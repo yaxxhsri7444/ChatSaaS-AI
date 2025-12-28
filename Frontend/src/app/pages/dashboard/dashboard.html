@@ -1,10 +1,21 @@
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
   <!-- Page Heading -->
-  <h1
-    class="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-8 tracking-tight"
-  >
-    Dashboard
-  </h1>
+  <div class="flex items-center justify-between mb-8">
+    <h1
+      class="text-4xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight"
+    >
+      Dashboard
+    </h1>
+    <button
+      (click)="refreshStats()"
+      [disabled]="loading"
+      class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      title="Refresh statistics"
+    >
+      <span [class.animate-spin]="loading">🔄</span>
+      <span>Refresh</span>
+    </button>
+  </div>
 
   <!-- Loading Spinner -->
   <div *ngIf="loading" class="flex justify-center py-16">
@@ -13,48 +24,143 @@
     ></div>
   </div>
 
+  <!-- Error Message -->
+  <div
+    *ngIf="error && !loading"
+    class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 rounded-lg flex items-start gap-3"
+  >
+    <span class="text-2xl">⚠️</span>
+    <div class="flex-1">
+      <p class="text-red-800 dark:text-red-200 font-semibold">Error Loading Stats</p>
+      <p class="text-red-700 dark:text-red-300 text-sm mt-1">{{ error }}</p>
+    </div>
+    <button
+      (click)="refreshStats()"
+      class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100 font-medium text-sm"
+    >
+      Retry
+    </button>
+  </div>
+
   <!-- Analytics Cards -->
   <div
-    *ngIf="!loading"
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+    *ngIf="!loading && !error"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fadeIn"
   >
     <!-- Total Chats -->
     <div
-      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
     >
-      <h2 class="text-gray-600 dark:text-gray-400 text-sm">Total Chats</h2>
-      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
-        {{ stats.totalChats }}
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Chats</h2>
+        <span class="text-2xl">💬</span>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-3">
+        {{ stats.totalChats | number }}
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        All conversations tracked
       </p>
     </div>
 
     <!-- Unique Users -->
     <div
-      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
     >
-      <h2 class="text-gray-600 dark:text-gray-400 text-sm">Unique Users</h2>
-      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
-        {{ stats.uniqueUsers }}
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Unique Users</h2>
+        <span class="text-2xl">👥</span>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white mt-3">
+        {{ stats.uniqueUsers | number }}
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        Active users this period
       </p>
     </div>
 
     <!-- Top Question -->
     <div
-      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
     >
-      <h2 class="text-gray-600 dark:text-gray-400 text-sm">Top Question</h2>
-      <p class="text-lg font-medium text-gray-900 dark:text-white mt-2 truncate">
-        {{ stats.topQuestion || 'N/A' }}
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Top Question</h2>
+        <span class="text-2xl">❓</span>
+      </div>
+      <p 
+        class="text-lg font-medium text-gray-900 dark:text-white mt-3 line-clamp-2"
+        [title]="stats.topQuestion || 'N/A'"
+      >
+        {{ stats.topQuestion || 'No questions yet' }}
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        Most frequently asked
       </p>
     </div>
 
     <!-- Avg Rating -->
     <div
-      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700"
     >
-      <h2 class="text-gray-600 dark:text-gray-400 text-sm">Avg. Rating</h2>
-      <p class="text-3xl font-bold text-yellow-500 mt-2">
-        {{ stats.avgRating }}/5 ⭐
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Avg. Rating</h2>
+        <span class="text-2xl">⭐</span>
+      </div>
+      <p class="text-3xl font-bold text-yellow-500 mt-3">
+        {{ stats.avgRating | number:'1.1-1' }}/5
+      </p>
+      <div class="flex mt-2">
+        <span 
+          *ngFor="let star of [1,2,3,4,5]" 
+          [class.text-yellow-400]="star <= stats.avgRating"
+          [class.text-gray-300]="star > stats.avgRating"
+          class="text-lg dark:text-gray-600"
+        >★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Stats Row (Optional) -->
+  <div
+    *ngIf="!loading && !error && stats.totalDocuments !== undefined"
+    class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 animate-fadeIn"
+  >
+    <!-- Total Documents -->
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Documents</h2>
+        <span class="text-2xl">📄</span>
+      </div>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white mt-3">
+        {{ stats.totalDocuments | number }}
+      </p>
+    </div>
+
+    <!-- Response Time -->
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Avg Response Time</h2>
+        <span class="text-2xl">⚡</span>
+      </div>
+      <p class="text-2xl font-bold text-gray-900 dark:text-white mt-3">
+        {{ stats.avgResponseTime || '1.2' }}s
+      </p>
+    </div>
+
+    <!-- Success Rate -->
+    <div
+      class="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-gray-600 dark:text-gray-400 text-sm font-medium">Success Rate</h2>
+        <span class="text-2xl">✅</span>
+      </div>
+      <p class="text-2xl font-bold text-green-500 mt-3">
+        {{ stats.successRate || 95 }}%
       </p>
     </div>
   </div>
@@ -66,25 +172,64 @@
     >
       ⚡ Quick Actions
     </h2>
-    <div class="flex flex-wrap gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <a
         routerLink="/upload"
-        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+        class="group p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-4 cursor-pointer"
       >
-        📂 Upload Documents
+        <div class="text-4xl group-hover:scale-110 transition-transform">📂</div>
+        <div>
+          <h3 class="font-bold text-lg">Upload Documents</h3>
+          <p class="text-sm text-indigo-100">Add knowledge to your bot</p>
+        </div>
       </a>
+
       <a
         routerLink="/chatboard"
-        class="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+        class="group p-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-4 cursor-pointer"
       >
-        💬 Open Chatboard
+        <div class="text-4xl group-hover:scale-110 transition-transform">💬</div>
+        <div>
+          <h3 class="font-bold text-lg">Open Chatboard</h3>
+          <p class="text-sm text-green-100">Test your chatbot</p>
+        </div>
       </a>
+
       <a
         routerLink="/widget"
-        class="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+        class="group p-6 bg-gradient-to-br from-yellow-400 to-orange-500 text-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-4 cursor-pointer"
       >
-        ⚙️ widget
+        <div class="text-4xl group-hover:scale-110 transition-transform">⚙️</div>
+        <div>
+          <h3 class="font-bold text-lg">Widget Settings</h3>
+          <p class="text-sm text-yellow-100">Customize your widget</p>
+        </div>
       </a>
+    </div>
+  </div>
+
+  <!-- Recent Activity (Optional) -->
+  <div *ngIf="recentChats && recentChats.length > 0" class="mt-12">
+    <h2
+      class="text-2xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
+    >
+      📊 Recent Activity
+    </h2>
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+      <div class="space-y-4">
+        <div
+          *ngFor="let chat of recentChats.slice(0, 5)"
+          class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+        >
+          <span class="text-xl">💬</span>
+          <div class="flex-1">
+            <p class="text-sm text-gray-900 dark:text-white font-medium">{{ chat.userMsg }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {{ chat.createdAt | date:'short' }}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

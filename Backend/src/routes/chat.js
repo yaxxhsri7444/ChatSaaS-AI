@@ -4,8 +4,7 @@ const chatController = require('../controller/chatController'); // this exports 
 
 const router = express.Router();
 
-// Apply protect middleware to all chat routes, then delegate to the controller router
-router.use(protect);
-router.use('/', chatController);
+// Apply protect middleware to all chat routes, then delegate to the controller route
+router.use('/query', protect, chatController.chatQuery);
 
 module.exports = router;

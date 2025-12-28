@@ -29,4 +29,17 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.BUSINESS_ID_KEY);
   }
+
+  getEmail(): string | null {
+    // Assuming the token is a JWT and contains the email in its payload
+    const token = this.getToken();
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.email;
+  }
+
+  redirectToLogin(router: Router) {
+    this.logout();
+    router.navigate(['/login']);
+  }
 }

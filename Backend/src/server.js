@@ -16,6 +16,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+
 app.use('/api/auth', authRoutes);
 app.use('/api/docs', docsRoutes);
 app.use('/api/chat', chatRoutes);

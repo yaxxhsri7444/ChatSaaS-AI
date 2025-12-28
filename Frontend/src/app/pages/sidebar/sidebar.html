@@ -1,31 +1,41 @@
+<!-- Mobile Overlay -->
+<div
+  *ngIf="isMobile && sidebarOpen"
+  (click)="closeOnMobile()"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+></div>
+
 <!-- Sidebar -->
 <aside
   [class.w-60]="sidebarOpen"
   [class.w-20]="!sidebarOpen"
   [class.-translate-x-full]="!sidebarOpen && isMobile"
-  class="fixed md:static z-40 top-0 left-0 h-screen 
-         bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl 
-         border-r border-white/10 dark:border-gray-700 
-         shadow-lg flex flex-col transition-all duration-300 ease-in-out"
+  class="fixed md:static z-40 top-0 left-0 h-screen
+         bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl
+         border-r border-white/10 dark:border-gray-700
+         shadow-2xl flex flex-col transition-all duration-300"
 >
+
   <!-- Logo / Toggle -->
-  <div class="flex items-center justify-between p-4">
+  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
     <div
-      class="text-xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 
-             bg-clip-text text-transparent whitespace-nowrap"
       *ngIf="sidebarOpen"
+      class="text-xl font-extrabold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+             bg-clip-text text-transparent"
     >
-      ChatSaaS
+      ChatSaaS AI
     </div>
+
     <button
       (click)="toggleSidebar()"
-      class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:scale-110 transition cursor-pointer"
+      class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:scale-110 transition"
     >
       <svg *ngIf="sidebarOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
         viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M6 18L18 6M6 6l12 12" />
       </svg>
+
       <svg *ngIf="!sidebarOpen" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
         viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -34,40 +44,72 @@
     </button>
   </div>
 
-  <!-- Menu Items -->
-  <ul class="flex-1 space-y-2 px-2">
-    <li *ngFor="let item of menu">
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="active-menu"
-        class="group flex items-center gap-3 px-3 py-2.5 rounded-lg 
-               text-gray-700 dark:text-gray-300 transition-all duration-200 
-               hover:scale-[1.02] hover:bg-gradient-to-r hover:from-indigo-500 hover:to-pink-500 hover:text-white"
-        (click)="closeOnMobile()"
+  <!-- User Info -->
+  <div *ngIf="isLoggedIn && sidebarOpen" class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600
+               flex items-center justify-center text-white font-bold"
       >
-        <span class="w-6 h-6 flex items-center justify-center text-lg">
-          {{ item.icon }}
-        </span>
-        <span *ngIf="sidebarOpen" class="font-medium">{{ item.label }}</span>
-      </a>
-    </li>
-  </ul>
+        {{ getUserInitials() }}
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-gray-900 dark:text-white">
+          {{ currentUser || 'User' }}
+        </p>
+        <p class="text-xs text-gray-500">Business Account</p>
+      </div>
+    </div>
+  </div>
 
-  <!-- Logout -->
-  <div class="p-4 border-t border-white/10">
+  <!-- Menu -->
+  <nav class="flex-1 overflow-y-auto py-4 px-2">
+    <ul class="space-y-2">
+      <li *ngFor="let item of menu">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active-menu"
+          (click)="closeOnMobile()"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg
+                 text-gray-700 dark:text-gray-300
+                 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-pink-500
+                 hover:text-white transition"
+        >
+          <span class="w-6 h-6 flex items-center justify-center text-lg">
+            {{ item.icon }}
+          </span>
+          <span *ngIf="sidebarOpen" class="font-medium">
+            {{ item.label }}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Auth Buttons -->
+  <div class="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+
+    <!-- Logout -->
     <button
+      *ngIf="isLoggedIn"
       (click)="logout()"
-      class="w-full flex items-center gap-3 px-3 py-2 bg-gradient-to-r 
-             from-red-500 to-pink-600 hover:from-pink-600 hover:to-red-500 
-             text-white rounded-lg shadow-md transform hover:scale-105 
-             active:scale-95 transition-all cursor-pointer"
+      class="w-full flex items-center justify-center gap-3 px-3 py-2.5
+             bg-gradient-to-r from-red-500 to-pink-600
+             text-white rounded-lg shadow-md hover:scale-105 transition"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-        viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-      </svg>
       <span *ngIf="sidebarOpen">Logout</span>
     </button>
+
+    <!-- Login -->
+    <button
+      *ngIf="!isLoggedIn"
+      (click)="login()"
+      class="w-full flex items-center justify-center gap-3 px-3 py-2.5
+             bg-gradient-to-r from-green-500 to-emerald-600
+             text-white rounded-lg shadow-md hover:scale-105 transition"
+    >
+      <span *ngIf="sidebarOpen">Login</span>
+    </button>
+
   </div>
 </aside>

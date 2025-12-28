@@ -1,35 +1,76 @@
-const axioms = require('axios');
+const axios = require('axios');
 
 const GEMINI_KEY = process.env.GEMINI_KEY;
-const EMB_MODEL = process.env.EMBEDDING_MODEL || 'all-MiniLM-L6-v2';
+const GEMINI_ENDPOINT =
+  process.env.GEMINI_ENDPOINT ||
+  'https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent';
 
+/* ===============================
+   Gemini Embeddings
+================================ */
 async function embedWithGemini(text) {
-  if (!GEMINI_KEY) throw new Error('Gemini not configured');
-  // NOTE: This is illustrative. Gemini's real HTTP API shape may differ — adapt per Google docs.
-  const resp = await axios.post(GEMINI_ENDPOINT, { input: text }, {
-    headers: { Authorization: `Bearer ${GEMINI_KEY}` }
-  });
-  return resp.data.embedding;
-}
-
-async function embedWithHF(text) {
-  if (!HF_KEY) throw new Error('HF inference API key not set');
-  const url = `https://api-inference.huggingface.co/embeddings/${EMB_MODEL}`;
-  const resp = await axios.post(url, { inputs: text }, {
-    headers: { Authorization: `Bearer ${HF_KEY}`, 'Content-Type': 'application/json' }
-  });
-  return resp.data.embedding || resp.data;
-}
-
-async function getEmbedding(text) {
-  // Keep text length limited by user of chunking
-  if (GEMINI_KEY ) {
-    return await embedWithGemini(text);
-  } else if (HF_KEY) {
-    return await embedWithHF(text);
-  } else {
-    throw new Error('No embedding provider configured. Set GEMINI or HF keys.');
+  if (!GEMINI_KEY) {
+    throw new Error('GEMINI_KEY not configured. Get one at https://aistudio.google.com/app/apikey');
   }
+  
+  try {
+    const url = `${GEMINI_ENDPOINT}?key=${GEMINI_KEY}`;
+    const resp = await axios.post(
+      url,
+      {
+        model: 'models/embedding-001',
+        content: {
+          parts: [{ text }]
+        }
+      },
+      { 
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000
+      }
+    );
+    
+    const values =
+      resp.data?.embedding?.values ||
+      resp.data?.embeddings?.[0]?.values;
+    
+    if (!values || !Array.isArray(values) || values.length === 0) {
+      throw new Error('Unexpected Gemini embedding response');
+    }
+    
+    console.log('✅ Embedding generated, dimension:', values.length);
+    return values;
+    
+  } catch (err) {
+    console.error(
+      '❌ Gemini embedding error:',
+      err.response?.data || err.message
+    );
+    throw new Error(
+      err.response?.data?.error?.message || err.message || 'Gemini embedding failed'
+    );
+  }
+}
+
+/* ===============================
+   Main Embedding Function
+================================ */
+async function getEmbedding(text) {
+  if (!text || typeof text !== 'string') {
+    throw new Error('Invalid input: text must be a string');
+  }
+  
+  const cleaned = text.trim();
+  if (!cleaned) {
+    throw new Error('Input text cannot be empty');
+  }
+  
+  const MAX_LEN = 8000;
+  const input = cleaned.length > MAX_LEN
+    ? cleaned.slice(0, MAX_LEN)
+    : cleaned;
+  
+  console.log('🔵 Using Gemini embeddings');
+  return embedWithGemini(input);
 }
 
 module.exports = { getEmbedding };
